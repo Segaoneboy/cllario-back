@@ -9,11 +9,18 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
+const allowedOrigins = ['https://localhost:3000', "https://cllario.vercel.app"];
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: function(origin, callback){
+        if(!origin) return callback(null, true);
+        if(allowedOrigins.includes(origin)){
+            return callback(null, true);
+        }
+        return callback(new Error("Not allowed"));
+    },
     credentials: true,
 }));
 
